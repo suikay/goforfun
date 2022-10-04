@@ -2,29 +2,43 @@ package main
 
 import (
 	"fmt"
-	color "github.com/fatih/color"
+	"github.com/fatih/color"
 	"math/rand"
 	"time"
 )
 
-var opStr = []string{"+", "-", "*", "/"}
+type calFunc func(int, int) int
 
-func opToStr(op int) string {
-	return opStr[op]
+type Operation struct {
+	Str string
+	f   calFunc
 }
 
-func calAnswer(x, op, y int) int {
-	switch op {
-	case 0:
-		return x + y
-	case 1:
-		return x - y
-	case 2:
-		return x * y
-	case 3:
-		return x / y
-	}
-	return 0
+var ops = []Operation{
+	{
+		Str: "+",
+		f: func(x, y int) int {
+			return x + y
+		},
+	},
+	{
+		Str: "-",
+		f: func(x, y int) int {
+			return x - y
+		},
+	},
+	{
+		Str: "×",
+		f: func(x, y int) int {
+			return x * y
+		},
+	},
+	{
+		Str: "÷",
+		f: func(x, y int) int {
+			return x / y
+		},
+	},
 }
 
 var congrats = []string{
@@ -39,7 +53,7 @@ var sads = []string{
 	"你再想想？",
 }
 
-func getRandSlice(s []string) string {
+func getRandSlice[T any](s []T) T {
 	return s[rand.Intn(len(s))]
 }
 
@@ -54,17 +68,17 @@ func main() {
 	for i := 0; i < cnt; i++ {
 		var ans int
 
-		x, y, op := rand.Intn(100), rand.Intn(100), rand.Intn(2)
-		fmt.Printf("%d %s %d = ?\n", x, opToStr(op), y)
+		x, y, op := rand.Intn(100), rand.Intn(100), getRandSlice(ops)
+		fmt.Printf("%d %s %d = ?\n", x, op.Str, y)
 		fmt.Scanf("%d", &ans)
-		if ans == calAnswer(x, op, y) {
+		if ans == op.f(x, y) {
 			// fmt.Printf("%s\033[0m\n\n", getRandSlice(congrats))
 			color.Green(getRandSlice(congrats) + "\n")
 			right++
 		} else {
 			color.Red(getRandSlice(sads) + "\n")
 			fmt.Printf("正确答案是：%d %s %d = %d\n\n",
-				x, opToStr(op), y, calAnswer(x, op, y))
+				x, op.Str, y, op.f(x, y))
 			wrong++
 		}
 	}
