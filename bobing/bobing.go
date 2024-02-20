@@ -42,7 +42,7 @@ func main() {
 		if isNothing(num) {
 			fmt.Printf("  乞丐，哈哈哈哈哈哈哈~~\n")
 		} else {
-			fmt.Printf("  手气不错~~\n")
+			fmt.Printf("   手气不错~~\n")
 		}
 	}
 }
